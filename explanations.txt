@@ -8,12 +8,11 @@ Efficiency
 ==========
 1.) The code scans all characters present in both the string s and t and creates dictionary. This operations is linear in the size of s and t.
 2.) During parsing of the string, the code checks to see if a particular character is already in the dictionary. This operation is in constant time as dictionaries are implemented as hash-maps in python.
-3.) Next, when bothe the dictionaries have been created, the code parses through characters in t and figures out if that character is present in the dictionary of s. This is again in linear time with the size of t and lookups from dictionary happen in constant time as dictionaries are implemented as hash-maps in python.
-4.) The dictionaries take the space proportional to the size of the string
-
+3.) Next, when both the dictionaries have been created, the code parses through characters in s and figures out if next len(t) characters in s are present in t. This is again in linear time with the size of s and lookups from dictionary happen in constant time as dictionaries are implemented as hash-maps in python.
+4.) Assuming, that the strings s and t come from a defined character set [a-z]. Hence the number of distinct characters (N) in it is constant. Therefore, the dictionaries would have a maximum length equal to N, which is constant.
 
 The overall performance of the algorithm in time is:  O(s+t)
-The overall performance of the algorithm in space is: O(s+t)
+The overall performance of the algorithm in space is: O(1)
 
 
 Question 2
@@ -96,29 +95,22 @@ and the answer would be 3.
 
 Algorithm:
 ==========
-1.) A tree is constructed from the matrix representing a tree
-2.) The tree is parsed from root to calculate the least common ancestor as follows:
+1.) The tree matrix T is parsed from root to calculate the least common ancestor as follows:
     a.)if node.value equals one of the two input nodes, then node is lca
     b.)if node value lies between the values in the two input nodes, then node is lca
     c.)if both values are greater than node.value, parse the right subtree
     d.)if both values are less than node.value, parse the left subtree
-
-Implementation:
-===============
-Given a matrix representing a tree, first a tree is constructed
-add_nodes_to_tree function starts fron root node, figures out the child nodes, adds them to tree
-Then the above function performs a depth first technique to populate the tree
-The function find_lca calculates the least common ancestor by performing binary search
+2.) At node r, the rth array in T describes its relation with its children. The array left of node r, T[r][:r] will have its left child. The array right of node r, T[r][r:] will contain its right child.
+3.) The index of node r's left child is: (T[r][:r]).index(1) 
+and the index of node r's right child is: r + (T[r][r:]).index(1)
+4.) The algorithm does not use any additional space other than local variables
 
 Efficiency:
 ===========
-1.) add_nodes_to_tree function: complexity is O(nodes)
-2.) find_lca: complexity: O(log(nodes))
+1.) find_lca: This function traverses through all nodes. For each node it scans an array to get indexes of 1s which represnt child. The complexity of this function is : O(nodes^2)
 
-The overall performance of the algorithm in time is:  O(nodes)
-The overall performance of the algorithm in space is: O(log(nodes))
-
-
+The overall performance of the algorithm in time is:  O(nodes^2)
+The overall performance of the algorithm in space is: O(1)
 
 
 Question 5

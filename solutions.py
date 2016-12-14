@@ -31,15 +31,34 @@ def question1(s,t):
         if char_in_t in char_dict_s.keys():
             char_in_s_count = char_dict_s[char_in_t]
             #count in s should be greater than or equal to count in t
-            if char_in_s_count>=char_in_t_count:
-                pass
-            else:
+            if char_in_s_count<char_in_t_count:
                 return False
+    
+    len_t=len(t)
+    len_s=len(s)
+    #go through substrings in s
+    start=len_t-1
+    match_len=0
+    while(start<len_s):
+        if s[start] in char_dict_t.keys():
+             match_len=match_len+1
+             #move to next character
+             start=start-1
         else:
-            return False
-    
-    
-    return True
+            #character is not present in t, move the sliding window ahead len_t places
+            start=start+len_t
+            match_len=0
+        
+        #print start, match_len
+        if match_len==len_t:
+            return True
+    return False
+
+s="udacity"
+t="uy"
+
+print question1(s,t)
+#answer should be: False
 
 s="udacity"
 t="ad"
@@ -218,77 +237,36 @@ print question3(G)
 #          1,
 #          4)
 #and the answer would be 3.
-class Node(object):
-    def __init__(self, value):
-        self.value = value
-        self.left = None
-        self.right = None
-
-class BST(object):
-    def __init__(self, root):
-        self.root = Node(root)
-
-    def print_tree(self):
-        #traversal = str(self.root.value)
-        #traversal = self.preorder_print(self.root.left,traversal)
-        #traversal = self.preorder_print(self.root.right,traversal)
-        traversal = self.preorder_print(self.root,"")
-        return traversal[1:]
+def find_lca(T,start,n1,n2):
+    lca_found=False
     
-    def preorder_print(self,start,traversal):
-        #print traversal
-        if start:
-            traversal = traversal + "-" + str(start.value)
-            #print traversal
-            if start.left:
-                traversal=self.preorder_print(start.left,traversal)
-                #print traversal
-            if start.right:
-                traversal=self.preorder_print(start.right,traversal)
-                #print traversal
-        #print traversal
-        return traversal
+    counter=0
+    while(lca_found==False):
+        counter=counter+1
+        if start==n1 or start==n2:
+            lca=start
+            lca_found=True
+        elif start>min(n1,n2) and start<max(n1,n2):
+            lca=start
+            lca_found=True
+        elif start<n1 and start<n2:
+            #find lca in right tree
+            #print "r ",(T[start][start:])
+            rchild=start+(T[start][start:]).index(1)
+            start=rchild
+        elif start>n1 and start>n2:
+            #find lca in left tree
+            #print "l ",(T[start][:start])
+            lchild=(T[start][:start]).index(1)
+            start=lchild
+            
+        if counter==20:
+            break
     
-def add_nodes_to_tree(start_node_val,start_node,T):
-    #print start_node,start_node.value,start_node.left,start_node.right
-    
-    children=T[start_node_val]
-    #print children
-    for i in range(len(children)):
-        if children[i]==1:
-            #found child
-            if i<start_node_val:
-                #found left child
-                start_node.left=Node(i)
-                add_nodes_to_tree(i,start_node.left,T)
-            else:
-                start_node.right=Node(i)
-                add_nodes_to_tree(i,start_node.right,T)
-    
-    
-def maketree(T,r):
-    tree=BST(r)
-    add_nodes_to_tree(r,tree.root,T)
-    return tree
-    
-def find_lca(start,n1,n2):
-    lca=None
-    if start.value==n1 or start.value==n2:
-        lca=start.value
-    elif start.value>min(n1,n2) and start.value<max(n1,n2):
-        lca=start.value
-    elif start.value<n1 and start.value<n2:
-        lca=find_lca(start.right,n1,n2)
-    elif start.value>n1 and start.value>n2:
-        lca=find_lca(start.left,n1,n2)
-
     return lca
-    
+
 def question4(T,r,n1,n2):
-    tree=maketree(T,r)
-    #print tree.print_tree()
-    
-    lca=find_lca(tree.root,n1,n2)
+    lca=find_lca(T,r,n1,n2)
     return lca
     
 question4([[0, 1, 0, 0, 0],
